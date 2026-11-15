@@ -54,3 +54,4 @@ Keep this list current. Every upstream file the fork modifies goes here with a o
 | `SparkyFitnessMobile/src/screens/ExerciseStatisticsScreen.tsx` | Strength gate: forces the Cardio view and hides the Strength/Cardio switch (#2). |
 | `SparkyFitnessMobile/src/screens/EquipmentScreen.tsx` | Strength gate: hides the Plates & bars row (#2). |
 | `SparkyFitnessMobile/src/components/ExerciseSummary.tsx` | Strength gate: hides the diary's workout plan "up next" rows (#2). |
+| `SparkyFitnessServer/services/stravaService.ts` | One import + one `plusSyncStravaGpsTracks(...)` call after `processStravaActivities` in the live sync: fetches Strava GPS streams into `exercise_entry_gps_points` via `integrations/strava/plusStravaStreams.ts` (#4). |

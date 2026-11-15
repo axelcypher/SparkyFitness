@@ -7,6 +7,7 @@ import { getSystemClient } from '../db/poolManager.js';
 import { loadRawBundle } from '../utils/diagnosticLogger.js';
 import { loadUserTimezone } from '../utils/timezoneLoader.js';
 import { todayInZone, addDays, dayRangeToUtcRange } from '@workspace/shared';
+import { plusSyncStravaGpsTracks } from '../integrations/strava/plusStravaStreams.js';
 
 /**
  * Orchestrate a full Strava data sync for a user
@@ -202,6 +203,13 @@ async function syncStravaData(
         );
       activitiesProcessed = processed;
       activitiesFailed = failed;
+      // sparkyfitness-plus (#4): GPS tracks; never throws or blocks the sync.
+      await plusSyncStravaGpsTracks(
+        userId,
+        accessToken,
+        activities,
+        detailedActivities
+      );
     }
     if (athleteData) {
       await stravaDataProcessor.processStravaAthleteWeight(
