@@ -1,0 +1,176 @@
+# Fork-only workflow: builds and publishes the fork's Docker images to GHCR
+# (ghcr.io/<owner>/<repo>-frontend and -server) and a matching GitHub Release.
+#
+# Two release channels:
+#   - nightly: every push to main (or a manual run from main). Image tags
+#     `nightly` and `nightly-<run_number>`; the single `nightly` pre-release is
+#     replaced on every run.
+#   - stable: a pushed tag like `v1.12.1-plus.1`. Image tags are the git tag
+#     itself and `latest`; a normal (non-pre) release is created for the tag.
+#
+# Stable tags use the `v*-plus.*` form on purpose: upstream's own `v1.x.y` tags
+# can reach the fork after merging upstream, and they must not publish fork
+# images. github.run_number is the nightly build number, so keep this file's
+# name stable.
+#
+# Upstream's workflows are left untouched (to keep upstream merges clean) and
+# are disabled in the fork's Actions settings instead of being edited.
+
+name: Publish Plus Docker Images
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*-plus.*']
+  workflow_dispatch:
+
+concurrency:
+  group: plus-docker-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build, push and release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Determine channel and tags
+        id: channel
+        run: |
+          echo "image_prefix=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF" == refs/tags/v*-plus.* ]]; then
+            {
+              echo "channel=stable"
+              echo "version_tag=${GITHUB_REF_NAME}"
+              echo "moving_tag=latest"
+            } >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match v*-plus.*; run from main for a nightly build."
+            exit 1
+          elif [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "::error::Nightly builds come only from main, not ${GITHUB_REF_NAME}."
+            exit 1
+          else
+            {
+              echo "channel=nightly"
+              echo "version_tag=nightly-${GITHUB_RUN_NUMBER}"
+              echo "moving_tag=nightly"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Metadata frontend
+        id: meta-frontend
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ steps.channel.outputs.image_prefix }}-frontend
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ steps.channel.outputs.version_tag }}
+            type=raw,value=${{ steps.channel.outputs.moving_tag }}
+
+      - name: Build and push frontend
+        id: push-frontend
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: docker/Dockerfile.frontend
+          push: true
+          pull: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=plus-frontend
+          cache-to: type=gha,mode=max,scope=plus-frontend
+
+      - name: Generate artifact attestation frontend
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ steps.channel.outputs.image_prefix }}-frontend
+          subject-digest: ${{ steps.push-frontend.outputs.digest }}
+          push-to-registry: true
+
+      - name: Metadata server
+        id: meta-server
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ steps.channel.outputs.image_prefix }}-server
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ steps.channel.outputs.version_tag }}
+            type=raw,value=${{ steps.channel.outputs.moving_tag }}
+
+      - name: Build and push server
+        id: push-server
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: docker/Dockerfile.backend
+          push: true
+          pull: true
+          tags: ${{ steps.meta-server.outputs.tags }}
+          labels: ${{ steps.meta-server.outputs.labels }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=plus-server
+          cache-to: type=gha,mode=max,scope=plus-server
+
+      - name: Generate artifact attestation server
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ steps.channel.outputs.image_prefix }}-server
+          subject-digest: ${{ steps.push-server.outputs.digest }}
+          push-to-registry: true
+
+      # Both images are pushed at this point; earlier failures stop the job
+      # before any release is touched.
+      - name: Replace nightly pre-release
+        if: steps.channel.outputs.channel == 'nightly'
+        env:
+          PREFIX: ${{ steps.channel.outputs.image_prefix }}
+          VERSION_TAG: ${{ steps.channel.outputs.version_tag }}
+        run: |
+          gh release delete nightly --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+          # A leftover tag without a release would pin the new release to an old commit.
+          gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/nightly" >/dev/null 2>&1 || true
+          notes=$(printf 'Nightly build %s from %s.\n\nImages:\n- `%s-frontend:%s`\n- `%s-server:%s`\n\nAlso available under the moving tag `nightly`.\n' \
+            "$VERSION_TAG" "$GITHUB_SHA" "$PREFIX" "$VERSION_TAG" "$PREFIX" "$VERSION_TAG")
+          gh release create nightly \
+            --repo "$GITHUB_REPOSITORY" \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Nightly ${VERSION_TAG}" \
+            --notes "$notes"
+
+      - name: Create stable release
+        if: steps.channel.outputs.channel == 'stable'
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release ${GITHUB_REF_NAME} already exists; leaving it as is."
+            exit 0
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "${GITHUB_REF_NAME#v}" \
+            --generate-notes
