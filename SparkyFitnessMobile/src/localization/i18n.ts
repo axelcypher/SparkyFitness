@@ -13,6 +13,7 @@ import {
   SUPPORTED_LANGUAGES,
   type SupportedLanguage,
 } from './localeRegistry';
+import { applyPlusI18nOverrides } from './plus/overrides';
 
 export { RESOURCE_MAP } from './generatedLocaleResources';
 export { SUPPORTED_LANGUAGES } from './localeRegistry';
@@ -152,6 +153,7 @@ async function initI18nLanguage(language: SupportedLanguage): Promise<void> {
     .init({ ...I18N_INIT_OPTIONS, lng: language });
   // The resolver only exists once init has built the instance's services.
   installFractionalPluralFallback();
+  applyPlusI18nOverrides(i18n);
 }
 
 let initPromise: Promise<void> | null = null;

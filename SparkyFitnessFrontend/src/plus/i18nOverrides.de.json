@@ -1,0 +1,39 @@
+{
+  "exercise": {
+    "databaseManager": {
+      "cardTitle": "Aktivitäten",
+      "exercises": "Aktivitäten"
+    },
+    "addExerciseDialog": {
+      "myExercisesTab": "Meine Aktivitäten"
+    }
+  },
+  "exerciseSearch": {
+    "ownership": {
+      "mine": "Meine Aktivitäten"
+    }
+  },
+  "trainingPrograms": {
+    "page": {
+      "back": "Aktivitäten"
+    }
+  },
+  "workoutPresetsManager": {
+    "exercises": "Aktivitäten"
+  },
+  "workoutPresetForm": {
+    "exercisesLabel": "Aktivitäten"
+  },
+  "addWorkoutPlanDialog": {
+    "exercisePlural": "Aktivitäten"
+  },
+  "workoutReport": {
+    "exercises": "Aktivitäten",
+    "exercises2": "Aktivitäten ({{groupedExercisesCount}})"
+  },
+  "exercises": {
+    "workoutPresetSelector": {
+      "exercises": "Aktivitäten"
+    }
+  }
+}

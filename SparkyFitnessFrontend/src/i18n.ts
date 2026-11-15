@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
 import { getSupportedLanguages } from './utils/languageUtils';
+import { installPlusI18nOverrides } from './plus/i18nOverrides';
 
 i18n
   .use(HttpApi)
@@ -32,5 +33,7 @@ i18n
       useSuspense: false,
     },
   });
+
+installPlusI18nOverrides(i18n);
 
 export default i18n;

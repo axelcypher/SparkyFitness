@@ -1,0 +1,38 @@
+{
+  "navigation": {
+    "exercises": "Aktivitäten"
+  },
+  "screens": {
+    "exercises": "Aktivitäten",
+    "library": {
+      "exercises": "Aktivitäten"
+    }
+  },
+  "exerciseLibrary": {
+    "title": "Aktivitäten",
+    "noun": "Aktivitäten"
+  },
+  "exerciseSearch": {
+    "title": "Aktivitäten",
+    "filter": {
+      "noun": "Aktivitäten"
+    }
+  },
+  "workout": {
+    "exercises": "Aktivitäten"
+  },
+  "workoutDetail": {
+    "summary": {
+      "exercise_one": "Aktivität",
+      "exercise_other": "Aktivitäten"
+    }
+  },
+  "workoutComplete": {
+    "sections": {
+      "exercises": "Aktivitäten"
+    }
+  },
+  "presetLibrary": {
+    "exercises": "Aktivitäten"
+  }
+}

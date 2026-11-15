@@ -29,3 +29,5 @@ Keep this list current. Every upstream file the fork modifies goes here with a o
 | File | Why |
 | --- | --- |
 | `CLAUDE.md` | Appended the `## Agent skills` block (upstream's file is a one-line pointer to AGENTS.md). |
+| `SparkyFitnessFrontend/src/i18n.ts` | One import + `installPlusI18nOverrides(i18n)` after `init()`: merges `src/plus/i18nOverrides.de.json` over the German catalog after each HTTP load (#1). |
+| `SparkyFitnessMobile/src/localization/i18n.ts` | One import + `applyPlusI18nOverrides(i18n)` after `init`: merges `src/localization/plus/de.json` over the bundled German catalog (#1). |
