@@ -10858,5 +10858,19 @@
       "mute": "Turn sound off",
       "unmute": "Turn sound on"
     }
+  },
+  "plus": {
+    "features": {
+      "title": "Features",
+      "description": "Turn whole features on or off on the website",
+      "actingOnBehalf": "You can only change features on your own account.",
+      "loadError": "Could not load your feature choices.",
+      "saveError": "Could not save your feature choice. Please try again.",
+      "footnote": "Turning a feature off only hides it on this website: nothing is deleted, and the mobile app keeps its own settings.",
+      "strengthTraining": {
+        "label": "Strength training",
+        "description": "Sets and reps, workout presets and plans, the workout player, the plate calculator and strength reports. Cardio and outdoor activities always show."
+      }
+    }
   }
 }

@@ -972,3 +972,17 @@ jest.mock('react-native-safe-area-context', () => {
     },
   };
 });
+
+// sparkyfitness-plus (#2): the strength training switch reads the feature
+// choices through React Query. Most screen tests render without a
+// QueryClient, so it is on here; tests of the switch re-mock the module.
+jest.mock('./src/plus/features/strengthTraining', () => {
+  // Plain functions, not jest.fn: tests that call resetAllMocks keep them. The
+  // filter is one stable function, as the real hook's is between renders.
+  const keepAll = (items) => items;
+  return {
+    ...jest.requireActual('./src/plus/features/strengthTraining'),
+    useStrengthTrainingEnabled: () => true,
+    useStrengthExerciseFilter: () => keepAll,
+  };
+});

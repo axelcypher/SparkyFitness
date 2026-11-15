@@ -148,6 +148,7 @@ import FamilyMembersScreen from '../screens/FamilyMembersScreen';
 import FamilyDiaryScreen from '../screens/FamilyDiaryScreen';
 import FamilyMealDetailScreen from '../screens/FamilyMealDetailScreen';
 import FamilyCopyReviewScreen from '../screens/FamilyCopyReviewScreen';
+import PlusFeaturesScreen from '../screens/PlusFeaturesScreen';
 import { withErrorBoundary } from '../components/ScreenErrorBoundary';
 
 // Onboarding — no Go Back (initial route for new users)
@@ -312,3 +313,4 @@ export const SafeSymptomHistory = withErrorBoundary(SymptomHistoryScreen, 'Sympt
 export const SafeSymptomEpisodeDetail = withErrorBoundary(SymptomEpisodeDetailScreen, 'SymptomEpisodeDetail', { canGoBack: true });
 export const SafeManageSymptoms = withErrorBoundary(ManageSymptomsScreen, 'ManageSymptoms', { canGoBack: true });
 export const SafeSymptomDefinitionEditor = withErrorBoundary(SymptomDefinitionEditorScreen, 'SymptomDefinitionEditor', { canGoBack: true });
+export const SafePlusFeatures = withErrorBoundary(PlusFeaturesScreen, 'PlusFeatures', { canGoBack: true });

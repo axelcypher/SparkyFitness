@@ -72,6 +72,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { getEnergyUnitString } from '@/utils/nutritionCalculations';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Exercise as ExerciseInterface } from '@/types/exercises';
+import { useStrengthTrainingEnabled } from '@/plus/features/strengthTraining';
 
 // The row thumbnail needs its own error state, so it is a component rather than
 // inline JSX in the column's cell renderer. Mirrors the search list item: show
@@ -118,6 +119,7 @@ const ExerciseDatabaseManager = () => {
   const { user } = useAuth();
   const { energyUnit, convertEnergy } = usePreferences();
   const isMobile = useIsMobile();
+  const strengthOn = useStrengthTrainingEnabled();
 
   // Existing states for Exercise management
   const editForm = useEditExerciseForm();
@@ -684,10 +686,10 @@ const ExerciseDatabaseManager = () => {
       />
 
       {/* Workout Presets Section */}
-      <WorkoutPresetsManager />
+      {strengthOn && <WorkoutPresetsManager />}
 
       {/* Workout Plans Section */}
-      <WorkoutPlansManager />
+      {strengthOn && <WorkoutPlansManager />}
 
       {/* Run and walk training programs */}
       <TrainingProgramsEntry />

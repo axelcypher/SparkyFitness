@@ -52,6 +52,12 @@ interface FeatureDefinition {
 
 export const OPTIONAL_FEATURES = {
   cycle: { group: 'health', defaultEnabled: false, storage: 'cycleSettings' },
+  // sparkyfitness-plus (#2): sets/reps, presets, plans and strength reports.
+  strengthTraining: {
+    group: 'training',
+    defaultEnabled: true,
+    storage: 'choices',
+  },
 } as const satisfies Record<string, FeatureDefinition>;
 
 export type FeatureKey = keyof typeof OPTIONAL_FEATURES;

@@ -52,6 +52,7 @@ import {
   rankedMuscleValues,
 } from '../utils/exerciseStats';
 import type { RootStackScreenProps } from '../types/navigation';
+import { useStrengthTrainingEnabled } from '../plus/features/strengthTraining';
 
 type ExerciseStatisticsScreenProps = RootStackScreenProps<'ExerciseStatistics'>;
 
@@ -132,7 +133,9 @@ const ExerciseStatisticsScreen: React.FC<ExerciseStatisticsScreenProps> = ({
   const { profile } = useProfile();
   const figure = chosenFigure ?? defaultBodyFigure(profile?.gender);
   const [openSection, setOpenSection] = useState<AnalysisSection | null>(null);
-  const [view, setView] = useState<StatisticsView>('strength');
+  const [chosenView, setView] = useState<StatisticsView>('strength');
+  const strengthOn = useStrengthTrainingEnabled();
+  const view: StatisticsView = strengthOn ? chosenView : 'cardio';
 
   const header = useScreenHeader({
     title: t('exerciseStatistics.title', {
@@ -631,26 +634,28 @@ const ExerciseStatisticsScreen: React.FC<ExerciseStatisticsScreenProps> = ({
             onCustomRangeChange={setCustomRange}
           />
         </View>
-        <View className="mb-4">
-          <SegmentedControl
-            segments={[
-              {
-                key: 'strength',
-                label: t('exerciseStatistics.views.strength', {
-                  defaultValue: 'Strength',
-                }),
-              },
-              {
-                key: 'cardio',
-                label: t('exerciseStatistics.views.cardio', {
-                  defaultValue: 'Cardio',
-                }),
-              },
-            ]}
-            activeKey={view}
-            onSelect={setView}
-          />
-        </View>
+        {strengthOn && (
+          <View className="mb-4">
+            <SegmentedControl
+              segments={[
+                {
+                  key: 'strength',
+                  label: t('exerciseStatistics.views.strength', {
+                    defaultValue: 'Strength',
+                  }),
+                },
+                {
+                  key: 'cardio',
+                  label: t('exerciseStatistics.views.cardio', {
+                    defaultValue: 'Cardio',
+                  }),
+                },
+              ]}
+              activeKey={view}
+              onSelect={setView}
+            />
+          </View>
+        )}
         {view === 'strength' ? renderBody() : renderCardio()}
       </ScrollView>
     </View>

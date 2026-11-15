@@ -7,6 +7,7 @@ import Icon from './Icon';
 import SwipeableExerciseRow from './SwipeableExerciseRow';
 import type { GetImageSource } from '../hooks/useExerciseImageSource';
 import { useActiveWorkoutPlans } from '../hooks/useActiveWorkoutPlan';
+import { useStrengthTrainingEnabled } from '../plus/features/strengthTraining';
 import type {
   WorkoutPlanAssignment,
   WorkoutPlanTemplate,
@@ -52,6 +53,7 @@ const ExerciseSummary: React.FC<ExerciseSummaryProps> = ({
   const activeAccent = accentPrimary || '#3B82F6';
   const activeMuted = textMuted || '#6B7280';
   const { plans: activePlans } = useActiveWorkoutPlans(entryDate);
+  const strengthOn = useStrengthTrainingEnabled();
   const [selectedSessionMap, setSelectedSessionMap] = useState<
     Record<string, string>
   >({});
@@ -59,10 +61,10 @@ const ExerciseSummary: React.FC<ExerciseSummaryProps> = ({
   const uncompletedActivePlans = useMemo(
     () =>
       getUncompletedActivePlans(
-        activePlans || [],
+        (strengthOn && activePlans) || [],
         getLoggedAssignmentIds(exerciseEntries)
       ),
-    [activePlans, exerciseEntries]
+    [activePlans, exerciseEntries, strengthOn]
   );
 
   const getDistinctSessionsForPlan = (

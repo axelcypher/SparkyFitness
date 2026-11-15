@@ -19,6 +19,7 @@ import AddCustomExerciseForm from './AddCustomExerciseForm';
 import ExerciseAlternativesPanel from './ExerciseAlternativesPanel';
 import type { ExerciseReplaceContext } from '@/utils/exerciseAlternatives';
 import { normalizeExerciseArrays } from '@/utils/exerciseArrays';
+import { useStrengthTrainingEnabled } from '@/plus/features/strengthTraining';
 
 interface AddExerciseDialogProps {
   open: boolean;
@@ -47,6 +48,7 @@ const AddExerciseDialog = ({
   replaceFor,
 }: AddExerciseDialogProps) => {
   const { t } = useTranslation();
+  const strengthOn = useStrengthTrainingEnabled();
   // Created and imported exercises come back as stored, with JSON-text array
   // columns, so every tab hands its consumer normalized arrays.
   const addExercise: AddExerciseDialogProps['onExerciseAdded'] = (
@@ -128,7 +130,7 @@ const AddExerciseDialog = ({
                 {t('exercise.addExerciseDialog.myExercisesTab', 'My Exercises')}
               </TabsTrigger>
             )}
-            {(mode === 'diary' || mode === 'workout-plan') && (
+            {strengthOn && (mode === 'diary' || mode === 'workout-plan') && (
               <TabsTrigger value="workout-preset">
                 {t(
                   'exercise.addExerciseDialog.workoutPresetTab',
@@ -182,7 +184,7 @@ const AddExerciseDialog = ({
             <AddCustomExerciseForm form={customForm} />
           </TabsContent>
 
-          {(mode === 'diary' || mode === 'workout-plan') && (
+          {strengthOn && (mode === 'diary' || mode === 'workout-plan') && (
             <TabsContent value="workout-preset">
               <div className="pt-4">
                 <WorkoutPresetSelector

@@ -17,6 +17,10 @@ import { Exercise } from '@/types/exercises';
 import { ExerciseSearchListItem } from './ExerciseSearchListItem';
 import { useExerciseSearchHook } from '@/hooks/Exercises/useExerciseSearchHook';
 import { localizeEquipment } from '@/utils/exerciseTaxonomy';
+import {
+  useStrengthExerciseFilter,
+  useStrengthTrainingEnabled,
+} from '@/plus/features/strengthTraining';
 
 interface OwnershipFields {
   user_id?: string | null;
@@ -108,21 +112,23 @@ const ExerciseSearch = ({
   });
 
   const { user } = useAuth();
+  const strengthOn = useStrengthTrainingEnabled();
+  const keepAllowed = useStrengthExerciseFilter();
   const [ownershipFilter, setOwnershipFilter] = useState<
     'all' | 'mine' | 'family' | 'public'
   >('all');
 
   const filteredRecentExercises = useMemo(
-    () => filterItems(recentExercises, ownershipFilter, user?.id),
-    [recentExercises, ownershipFilter, user?.id]
+    () => filterItems(keepAllowed(recentExercises), ownershipFilter, user?.id),
+    [recentExercises, ownershipFilter, user?.id, keepAllowed]
   );
   const filteredTopExercises = useMemo(
-    () => filterItems(topExercises, ownershipFilter, user?.id),
-    [topExercises, ownershipFilter, user?.id]
+    () => filterItems(keepAllowed(topExercises), ownershipFilter, user?.id),
+    [topExercises, ownershipFilter, user?.id, keepAllowed]
   );
   const filteredExercises = useMemo(
-    () => filterItems(exercises, ownershipFilter, user?.id),
-    [exercises, ownershipFilter, user?.id]
+    () => filterItems(keepAllowed(exercises), ownershipFilter, user?.id),
+    [exercises, ownershipFilter, user?.id, keepAllowed]
   );
 
   const triggerSearch = () => {
@@ -270,7 +276,7 @@ const ExerciseSearch = ({
       </div>
 
       {/* Equipment filter chips */}
-      {availableEquipment.length > 0 && (
+      {strengthOn && availableEquipment.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {availableEquipment.map((eq) => (
             <button
@@ -290,11 +296,13 @@ const ExerciseSearch = ({
       )}
 
       {/* Body map */}
-      <BodyMapFilter
-        selectedMuscles={muscleGroupFilter}
-        onMuscleToggle={handleMuscleToggle}
-        availableMuscleGroups={availableMuscleGroups}
-      />
+      {strengthOn && (
+        <BodyMapFilter
+          selectedMuscles={muscleGroupFilter}
+          onMuscleToggle={handleMuscleToggle}
+          availableMuscleGroups={availableMuscleGroups}
+        />
+      )}
 
       {/* Loading state */}
       {loading && (

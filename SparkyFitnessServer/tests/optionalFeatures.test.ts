@@ -26,7 +26,7 @@ function keys(count: number, value: boolean | null = true) {
 
 describe('optional features registry', () => {
   it('lists cycle, stored in cycle_settings', () => {
-    expect(FEATURE_KEYS).toEqual(['cycle']);
+    expect(FEATURE_KEYS).toEqual(['cycle', 'strengthTraining']);
     expect(featureStorage('cycle')).toBe('cycleSettings');
   });
 

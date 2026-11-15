@@ -558,6 +558,7 @@ export type RootStackParamList = {
   SymptomEpisodeDetail: { entryId: string };
   ManageSymptoms: undefined;
   SymptomDefinitionEditor: { definitionId?: string } | undefined;
+  PlusFeatures: undefined;
 };
 
 declare global {

@@ -188,6 +188,7 @@ import {
   SafeSymptomEpisodeDetail,
   SafeManageSymptoms,
   SafeSymptomDefinitionEditor,
+  SafePlusFeatures,
 } from './src/navigation/safeScreens';
 import ReauthModal from './src/components/ReauthModal';
 import ServerConfigModal from './src/components/ServerConfigModal';
@@ -1511,6 +1512,11 @@ function AppContent() {
               headerBackButtonDisplayMode: 'minimal',
               ...(Platform.OS === 'android' ? androidModalAnimation : {}),
             })}
+          />
+          <Stack.Screen
+            name="PlusFeatures"
+            component={SafePlusFeatures}
+            options={createStackScreenOptions(t('plus.features.title', { defaultValue: 'Features' }), { headerBackTitle: t('navigation.settings', { defaultValue: 'Settings' }) })}
           />
         </Stack.Navigator>
         <AddSheet

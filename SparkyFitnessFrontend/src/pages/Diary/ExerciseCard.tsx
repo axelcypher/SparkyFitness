@@ -53,6 +53,7 @@ import {
 } from '@/hooks/Exercises/useExerciseEntries';
 import { useActiveWorkoutPlans } from '@/hooks/Exercises/useWorkoutPlans';
 import RunProgramBanner from './RunProgramBanner';
+import { useStrengthTrainingEnabled } from '@/plus/features/strengthTraining';
 import {
   useWorkoutPresets,
   workoutPresetByIdOptions,
@@ -102,6 +103,7 @@ const ExerciseCard = ({
   const { user } = useAuth();
   const { activeUserId, hasWritePermission } = useActiveUser();
   const canLinkWorkouts = hasWritePermission('diary');
+  const strengthOn = useStrengthTrainingEnabled();
   const { loggingLevel, energyUnit, convertEnergy, getEnergyUnitString } =
     usePreferences();
   debug(
@@ -640,6 +642,7 @@ const ExerciseCard = ({
       }
     );
   }, [activePlans, loggedAssignmentIds]);
+  const shownActivePlans = strengthOn ? uncompletedActivePlans : [];
 
   const getDistinctSessionsForPlan = (plan: WorkoutPlanTemplate) => {
     if (!plan.assignments || plan.assignments.length === 0) return [];
@@ -711,22 +714,24 @@ const ExerciseCard = ({
             {t('exerciseCard.title', 'Exercise')}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="default"
-                    variant="outline"
-                    onClick={handleStartWorkoutPlayback}
-                  >
-                    <Play className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t('exerciseCard.startWorkout', 'Start Workout')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {strengthOn && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="default"
+                      variant="outline"
+                      onClick={handleStartWorkoutPlayback}
+                    >
+                      <Play className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t('exerciseCard.startWorkout', 'Start Workout')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -754,7 +759,7 @@ const ExerciseCard = ({
       </CardHeader>
       <CardContent>
         <RunProgramBanner date={selectedDate} />
-        {uncompletedActivePlans.map((plan: WorkoutPlanTemplate) => {
+        {shownActivePlans.map((plan: WorkoutPlanTemplate) => {
           const distinctSessions = getDistinctSessionsForPlan(plan);
           const currentAssignmentId =
             selectedSessionMap[plan.id] ||

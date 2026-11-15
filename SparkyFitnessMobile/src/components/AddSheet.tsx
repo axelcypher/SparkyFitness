@@ -29,6 +29,7 @@ import {
   type AddMenuRowStyle,
 } from '../constants/addMenuItems';
 import { useAppPreferencesStore } from '../stores/appPreferencesStore';
+import { useStrengthTrainingEnabled } from '../plus/features/strengthTraining';
 import {
   chunkIntoLines,
   groupRowsByStyle,
@@ -104,6 +105,7 @@ const AddSheet = React.forwardRef<AddSheetRef, AddSheetProps>(
     ref
   ) => {
     const { t } = useTranslation();
+    const strengthOn = useStrengthTrainingEnabled();
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     // The camera cutout and status icons sit in the safe area on the Duo's
     // folded and unfolded-portrait poses; keep the sheet clear of them.
@@ -677,15 +679,19 @@ const AddSheet = React.forwardRef<AddSheetRef, AddSheetProps>(
                 style={{ backgroundColor: raisedBg }}
               >
                 {[
-                  renderExerciseOption(
-                    t('addSheet.workout', { defaultValue: 'Workout' }),
-                    t('addSheet.liveSets', {
-                      defaultValue: 'Live sets & reps',
-                    }),
-                    'exercise-weights',
-                    'accent',
-                    onStartWorkout
-                  ),
+                  ...(strengthOn
+                    ? [
+                        renderExerciseOption(
+                          t('addSheet.workout', { defaultValue: 'Workout' }),
+                          t('addSheet.liveSets', {
+                            defaultValue: 'Live sets & reps',
+                          }),
+                          'exercise-weights',
+                          'accent',
+                          onStartWorkout
+                        ),
+                      ]
+                    : []),
                   renderExerciseOption(
                     t('addSheet.activity', { defaultValue: 'Activity' }),
                     t('addSheet.durationDistance', {
@@ -695,15 +701,21 @@ const AddSheet = React.forwardRef<AddSheetRef, AddSheetProps>(
                     'green',
                     onAddActivity
                   ),
-                  renderExerciseOption(
-                    t('addSheet.logWorkout', { defaultValue: 'Log Workout' }),
-                    t('addSheet.pastSets', {
-                      defaultValue: 'Past sets & reps',
-                    }),
-                    'pencil',
-                    'violet',
-                    onLogWorkout
-                  ),
+                  ...(strengthOn
+                    ? [
+                        renderExerciseOption(
+                          t('addSheet.logWorkout', {
+                            defaultValue: 'Log Workout',
+                          }),
+                          t('addSheet.pastSets', {
+                            defaultValue: 'Past sets & reps',
+                          }),
+                          'pencil',
+                          'violet',
+                          onLogWorkout
+                        ),
+                      ]
+                    : []),
                   ...(onRecordActivity
                     ? [
                         renderExerciseOption(

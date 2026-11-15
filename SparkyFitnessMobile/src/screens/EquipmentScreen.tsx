@@ -8,6 +8,7 @@ import SettingsRow, { SettingsRowGroup } from '../components/SettingsRow';
 import { useScreenHeader } from '../hooks/useScreenHeader';
 import { useNativeIOSHeadersActive } from '../services/nativeTabBarPreference';
 import type { RootStackScreenProps } from '../types/navigation';
+import { useStrengthTrainingEnabled } from '../plus/features/strengthTraining';
 
 type Props = RootStackScreenProps<'Equipment'>;
 
@@ -20,6 +21,7 @@ const EquipmentScreen: React.FC<Props> = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const activeWorkoutBarPadding = useActiveWorkoutBarPadding('stack');
   const usesNativeHeader = useNativeIOSHeadersActive();
+  const strengthOn = useStrengthTrainingEnabled();
 
   const header = useScreenHeader({
     title: t('equipmentHub.title', { defaultValue: 'Equipment' }),
@@ -48,16 +50,18 @@ const EquipmentScreen: React.FC<Props> = ({ navigation }) => {
             onPress={() => navigation.navigate('Shoes')}
             testID="equipment-shoes"
           />
-          <SettingsRow
-            icon="exercise-weights"
-            title={t('plates.title', { defaultValue: 'Plates & bars' })}
-            subtitle={t('equipmentHub.platesSubtitle', {
-              defaultValue:
-                'The bars and plates you own, for the plate calculator',
-            })}
-            onPress={() => navigation.navigate('PlateInventory')}
-            testID="equipment-plates"
-          />
+          {strengthOn && (
+            <SettingsRow
+              icon="exercise-weights"
+              title={t('plates.title', { defaultValue: 'Plates & bars' })}
+              subtitle={t('equipmentHub.platesSubtitle', {
+                defaultValue:
+                  'The bars and plates you own, for the plate calculator',
+              })}
+              onPress={() => navigation.navigate('PlateInventory')}
+              testID="equipment-plates"
+            />
+          )}
         </SettingsRowGroup>
       </ScrollView>
     </View>

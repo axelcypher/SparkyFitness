@@ -69,6 +69,7 @@ import { useRunningTrends } from '@/hooks/Reports/useRunningTrends';
 import { RunningTrendsCard } from '@/components/ExerciseCharts/RunningTrendsCard';
 import { FitnessTestsCard } from '@/components/ExerciseCharts/FitnessTestsCard';
 import { useFitnessTests } from '@/hooks/Exercises/useFitnessTests';
+import { useStrengthTrainingEnabled } from '@/plus/features/strengthTraining';
 
 interface ExerciseReportsDashboardProps {
   exerciseDashboardData: ExerciseDashboardData | undefined;
@@ -133,9 +134,11 @@ const ExerciseReportsDashboard = ({
     distanceUnit === 'miles' ? 'imperial' : 'metric';
 
   // Domain view selector: 'all' | 'strength' | 'cardio'
-  const [viewMode, setViewMode] = useState<'all' | 'strength' | 'cardio'>(
+  const [chosenViewMode, setViewMode] = useState<'all' | 'strength' | 'cardio'>(
     'all'
   );
+  const strengthOn = useStrengthTrainingEnabled();
+  const viewMode = strengthOn ? chosenViewMode : 'cardio';
 
   const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
     null
@@ -770,7 +773,13 @@ const ExerciseReportsDashboard = ({
       {/* Tier 1: View Mode Tabs & Global Interval Selector */}
       <div className="sticky top-0 z-20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-3 rounded-xl border bg-card shadow-sm">
         {/* Domain View Selector */}
-        <div className="self-start inline-flex items-center gap-1 bg-muted p-1 rounded-md">
+        <div
+          className={
+            strengthOn
+              ? 'self-start inline-flex items-center gap-1 bg-muted p-1 rounded-md'
+              : 'hidden'
+          }
+        >
           <button
             type="button"
             title={t('exerciseAnalytics.views.all', 'All Workouts')}
@@ -868,10 +877,12 @@ const ExerciseReportsDashboard = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Side: KPIs & PR Badges Matrix */}
         <div className="lg:col-span-7 space-y-6">
-          <KeyStatsWidget
-            data={exerciseDashboardData}
-            weightUnit={weightUnit}
-          />
+          {strengthOn && (
+            <KeyStatsWidget
+              data={exerciseDashboardData}
+              weightUnit={weightUnit}
+            />
+          )}
           <CardioPRBadgesWidget prData={prMatrix} viewMode={viewMode} />
           <FitnessFatigueCard data={fitnessFatigue} />
           <RunEstimatesCard data={runEstimates} />

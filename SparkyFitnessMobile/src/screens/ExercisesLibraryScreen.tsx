@@ -15,6 +15,7 @@ import StatusView from '../components/StatusView';
 import ServerGate from '../components/ServerGate';
 import { useActiveWorkoutBarPadding } from '../components/ActiveWorkoutBar';
 import { useExercisesLibrary, useServerConnection, useProfile } from '../hooks';
+import { useStrengthExerciseFilter } from '../plus/features/strengthTraining';
 import {
   deriveShareStatus,
   filterByOwnership,
@@ -58,6 +59,7 @@ const ExercisesLibraryScreen: React.FC<ExercisesLibraryScreenProps> = ({
   const { isConnected } = useServerConnection();
   const { profile } = useProfile();
   const { getImageSource } = useExerciseImageSource();
+  const keepAllowed = useStrengthExerciseFilter();
 
   const {
     exercises,
@@ -71,8 +73,9 @@ const ExercisesLibraryScreen: React.FC<ExercisesLibraryScreenProps> = ({
     refetch,
   } = useExercisesLibrary(searchText, { enabled: isConnected });
   const filteredExercises = useMemo(
-    () => filterByOwnership(exercises, ownershipFilter, profile?.id),
-    [exercises, ownershipFilter, profile?.id]
+    () =>
+      filterByOwnership(keepAllowed(exercises), ownershipFilter, profile?.id),
+    [exercises, ownershipFilter, profile?.id, keepAllowed]
   );
 
   const handleExercisePress = useCallback(

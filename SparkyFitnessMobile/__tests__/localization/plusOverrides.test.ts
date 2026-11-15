@@ -56,7 +56,11 @@ describe('plus German i18n overrides', () => {
 
   it('only overrides keys that exist in the German and English catalogs', () => {
     for (const [key] of overriddenKeys) {
-      expect(typeof lookup(deCatalog, key)).toBe('string');
+      // Fork-only strings (`plus.*`) live in the English catalog alone; the
+      // synced German catalog never has them, so the override is their text.
+      if (!key.startsWith('plus.')) {
+        expect(typeof lookup(deCatalog, key)).toBe('string');
+      }
       expect(typeof lookup(enCatalog, key)).toBe('string');
     }
   });

@@ -35,5 +35,19 @@
     "workoutPresetSelector": {
       "exercises": "Aktivitäten"
     }
+  },
+  "plus": {
+    "features": {
+      "title": "Funktionen",
+      "description": "Ganze Funktionen auf der Website ein- oder ausschalten",
+      "actingOnBehalf": "Funktionen kannst du nur in deinem eigenen Konto ändern.",
+      "loadError": "Deine Auswahl der Funktionen konnte nicht geladen werden.",
+      "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "footnote": "Eine ausgeschaltete Funktion wird nur auf dieser Website ausgeblendet: Es wird nichts gelöscht, und die mobile App behält ihre eigenen Einstellungen.",
+      "strengthTraining": {
+        "label": "Krafttraining",
+        "description": "Sätze und Wiederholungen, Trainingsvorlagen und -pläne, der Trainingsplayer, der Hantelscheibenrechner und Kraftauswertungen. Ausdauer- und Outdoor-Aktivitäten bleiben immer sichtbar."
+      }
+    }
   }
 }

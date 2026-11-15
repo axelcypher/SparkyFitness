@@ -34,5 +34,17 @@
   },
   "presetLibrary": {
     "exercises": "Aktivitäten"
+  },
+  "plus": {
+    "features": {
+      "title": "Funktionen",
+      "loadError": "Deine Auswahl der Funktionen konnte nicht geladen werden.",
+      "saveError": "Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "footnote": "Eine ausgeschaltete Funktion wird nur in dieser App ausgeblendet: Es wird nichts gelöscht, und die Website behält ihre eigenen Einstellungen.",
+      "strengthTraining": {
+        "label": "Krafttraining",
+        "description": "Live und nachträglich erfasste Krafttrainings, Trainingsvorlagen und -pläne, Scheiben & Stangen und Kraftstatistiken. Aktivitäten, Routen und Ausdauer bleiben immer sichtbar."
+      }
+    }
   }
 }

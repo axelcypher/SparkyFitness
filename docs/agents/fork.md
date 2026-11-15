@@ -31,3 +31,26 @@ Keep this list current. Every upstream file the fork modifies goes here with a o
 | `CLAUDE.md` | Appended the `## Agent skills` block (upstream's file is a one-line pointer to AGENTS.md). |
 | `SparkyFitnessFrontend/src/i18n.ts` | One import + `installPlusI18nOverrides(i18n)` after `init()`: merges `src/plus/i18nOverrides.de.json` over the German catalog after each HTTP load (#1). |
 | `SparkyFitnessMobile/src/localization/i18n.ts` | One import + `applyPlusI18nOverrides(i18n)` after `init`: merges `src/localization/plus/de.json` over the bundled German catalog (#1). |
+| `shared/src/features/optionalFeatures.ts` | One registry entry `strengthTraining` (group `training`, default on, stored in `feature_choices`) (#2). |
+| `SparkyFitnessServer/tests/optionalFeatures.test.ts` | The registry key list now includes `strengthTraining` (#2); the fork's own checks are in `tests/plusStrengthTrainingFeature.test.ts`. |
+| `SparkyFitnessFrontend/public/locales/en/translation.json` | Appended a top-level `plus.features` block (Features section and strength training switch texts) (#2). |
+| `SparkyFitnessFrontend/src/pages/Settings/SettingsPage.tsx` | One import + one accordion item mounting `src/plus/features/PlusFeaturesSettings` (Settings > Profile & Account > Features) (#2). |
+| `SparkyFitnessFrontend/src/pages/Exercises/Exercises.tsx` | Strength gate: hides the workout presets and workout plans sections (#2). |
+| `SparkyFitnessFrontend/src/pages/Exercises/AddExerciseDialog.tsx` | Strength gate: hides the Workout Preset tab (#2). |
+| `SparkyFitnessFrontend/src/pages/Exercises/ExerciseSearch.tsx` | Strength gate: lists only cardio exercises (modality) and hides the equipment chips and body map (#2). |
+| `SparkyFitnessFrontend/src/pages/Exercises/EquipmentManager.tsx` | Strength gate: hides Plates & bars (#2). |
+| `SparkyFitnessFrontend/src/pages/Diary/ExerciseCard.tsx` | Strength gate: hides the Start Workout (player) button and the workout plan "up next" rows (#2). |
+| `SparkyFitnessFrontend/src/pages/Reports/ExerciseReportsDashboard.tsx` | Strength gate: forces the Cardio & GPS view, hides the view switch and the volume/reps key stats (#2). |
+| `SparkyFitnessMobile/App.tsx` | One `SafePlusFeatures` import + one `<Stack.Screen name="PlusFeatures">` (#2). |
+| `SparkyFitnessMobile/src/types/navigation.ts` | One `PlusFeatures` route in `RootStackParamList` (#2). |
+| `SparkyFitnessMobile/src/navigation/safeScreens.tsx` | One import + one `SafePlusFeatures` export for the fork's `src/screens/PlusFeaturesScreen.tsx` (#2). |
+| `SparkyFitnessMobile/src/screens/SettingsScreen.tsx` | One Settings row "Features" opening `PlusFeatures` (#2). |
+| `SparkyFitnessMobile/src/localization/locales/en/translation.json` | Appended a top-level `plus.features` block (#2). |
+| `SparkyFitnessMobile/jest.setup.js` | Global mock of `src/plus/features/strengthTraining` (on), as upstream does for `useEnergyUnit`, so screen tests without a QueryClient keep working (#2). |
+| `SparkyFitnessMobile/src/components/AddSheet.tsx` | Strength gate: hides Workout and Log Workout in the Exercise sub-menu (#2). |
+| `SparkyFitnessMobile/src/screens/LibraryScreen.tsx` | Strength gate: hides the Workout preset tile and the Workout plans and Workout presets rows (#2). |
+| `SparkyFitnessMobile/src/screens/ExercisesLibraryScreen.tsx` | Strength gate: lists only cardio exercises (modality) (#2). |
+| `SparkyFitnessMobile/src/screens/ExerciseSearchScreen.tsx` | Strength gate: recent, top and search results list only cardio exercises (#2). |
+| `SparkyFitnessMobile/src/screens/ExerciseStatisticsScreen.tsx` | Strength gate: forces the Cardio view and hides the Strength/Cardio switch (#2). |
+| `SparkyFitnessMobile/src/screens/EquipmentScreen.tsx` | Strength gate: hides the Plates & bars row (#2). |
+| `SparkyFitnessMobile/src/components/ExerciseSummary.tsx` | Strength gate: hides the diary's workout plan "up next" rows (#2). |

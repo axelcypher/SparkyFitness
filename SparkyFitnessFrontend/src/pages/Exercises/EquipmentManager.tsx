@@ -37,6 +37,7 @@ import {
 } from '@/components/PlateCalculator/plateFormat';
 import { ShoeFormDialog } from './ShoeFormDialog';
 import { PlateInventoryDialog } from './PlateInventoryDialog';
+import { useStrengthTrainingEnabled } from '@/plus/features/strengthTraining';
 
 const ShoeCard: React.FC<{
   shoe: ShoeResponse;
@@ -271,6 +272,7 @@ const EquipmentManager: React.FC = () => {
   const { hasWritePermission, isActingOnBehalf } = useActiveUser();
   // Reads follow the diary or reports permission; every change needs diary write.
   const canWrite = hasWritePermission('diary');
+  const strengthOn = useStrengthTrainingEnabled();
   const { data: shoes, isLoading } = useShoes();
   const createShoe = useCreateShoeMutation();
   const updateShoe = useUpdateShoeMutation();
@@ -370,7 +372,9 @@ const EquipmentManager: React.FC = () => {
           </>
         )}
 
-        {!isActingOnBehalf && <PlateInventorySection canWrite={canWrite} />}
+        {!isActingOnBehalf && strengthOn && (
+          <PlateInventorySection canWrite={canWrite} />
+        )}
 
         <ShoeFormDialog
           open={dialogOpen}

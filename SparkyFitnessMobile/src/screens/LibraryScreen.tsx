@@ -45,6 +45,7 @@ import { foodItemToFoodInfo } from '../types/foodInfo';
 import type { FoodItem } from '../types/foods';
 import type { Meal } from '../types/meals';
 import type { RootStackParamList, TabParamList } from '../types/navigation';
+import { useStrengthTrainingEnabled } from '../plus/features/strengthTraining';
 
 type LibraryScreenProps = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'Library'>,
@@ -60,6 +61,7 @@ type RecentItem =
 
 const LibraryScreen: React.FC<LibraryScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const strengthOn = useStrengthTrainingEnabled();
   const { status: storedProgram, enabled: programEnabled } = useRunProgram();
   const activeProgram = programEnabled ? storedProgram : null;
   const insets = useSafeAreaInsets();
@@ -310,24 +312,26 @@ const LibraryScreen: React.FC<LibraryScreenProps> = ({ navigation }) => {
           }
           className="w-[48%] mb-3"
         />
-        <CreateTile
-          icon="bookmark-filled"
-          title={t('screens.library.workoutPreset', {
-            defaultValue: 'Workout preset',
-          })}
-          subtitle={t('screens.library.exerciseRoutine', {
-            defaultValue: 'Exercise routine',
-          })}
-          disabled={isNavigationLocked}
-          onPress={() =>
-            runNavigationAction(() =>
-              navigation.navigate('WorkoutPresetForm', {
-                mode: 'create-preset',
-              })
-            )
-          }
-          className="w-[48%] mb-3"
-        />
+        {strengthOn && (
+          <CreateTile
+            icon="bookmark-filled"
+            title={t('screens.library.workoutPreset', {
+              defaultValue: 'Workout preset',
+            })}
+            subtitle={t('screens.library.exerciseRoutine', {
+              defaultValue: 'Exercise routine',
+            })}
+            disabled={isNavigationLocked}
+            onPress={() =>
+              runNavigationAction(() =>
+                navigation.navigate('WorkoutPresetForm', {
+                  mode: 'create-preset',
+                })
+              )
+            }
+            className="w-[48%] mb-3"
+          />
+        )}
       </View>
 
       <View className="mb-3">
@@ -385,25 +389,27 @@ const LibraryScreen: React.FC<LibraryScreenProps> = ({ navigation }) => {
           </View>
           <Icon name="chevron-forward" size={20} color="#999" />
         </Pressable>
-        <Pressable
-          className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
-          onPress={() => navigation.navigate('WorkoutPlans')}
-          style={({ pressed }) => (pressed ? { opacity: 0.7 } : null)}
-        >
-          <View className="flex-1 mr-3">
-            <Text className="text-base font-semibold text-text-primary">
-              {t('screens.library.workoutPlans', {
-                defaultValue: 'Workout plans',
-              })}
-            </Text>
-            <Text className="text-sm text-text-secondary mt-0.5">
-              {t('screens.library.workoutPlansSubtitle', {
-                defaultValue: 'Schedule workouts across the week',
-              })}
-            </Text>
-          </View>
-          <Icon name="chevron-forward" size={20} color="#999" />
-        </Pressable>
+        {strengthOn && (
+          <Pressable
+            className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
+            onPress={() => navigation.navigate('WorkoutPlans')}
+            style={({ pressed }) => (pressed ? { opacity: 0.7 } : null)}
+          >
+            <View className="flex-1 mr-3">
+              <Text className="text-base font-semibold text-text-primary">
+                {t('screens.library.workoutPlans', {
+                  defaultValue: 'Workout plans',
+                })}
+              </Text>
+              <Text className="text-sm text-text-secondary mt-0.5">
+                {t('screens.library.workoutPlansSubtitle', {
+                  defaultValue: 'Schedule workouts across the week',
+                })}
+              </Text>
+            </View>
+            <Icon name="chevron-forward" size={20} color="#999" />
+          </Pressable>
+        )}
         <Pressable
           className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
           onPress={() => navigation.navigate('RunPrograms')}
@@ -504,23 +510,25 @@ const LibraryScreen: React.FC<LibraryScreenProps> = ({ navigation }) => {
             <Icon name="chevron-forward" size={20} color="#999" />
           </View>
         </Pressable>
-        <Pressable
-          className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
-          onPress={() => navigation.navigate('WorkoutPresetsLibrary')}
-          style={({ pressed }) => (pressed ? { opacity: 0.7 } : null)}
-        >
-          <Text className="text-base font-semibold text-text-primary">
-            {t('screens.library.workoutPresets', {
-              defaultValue: 'Workout presets',
-            })}
-          </Text>
-          <View className="flex-row items-center">
-            <Text className="text-text-secondary text-base mr-2">
-              {presetsCount ?? '-'}
+        {strengthOn && (
+          <Pressable
+            className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
+            onPress={() => navigation.navigate('WorkoutPresetsLibrary')}
+            style={({ pressed }) => (pressed ? { opacity: 0.7 } : null)}
+          >
+            <Text className="text-base font-semibold text-text-primary">
+              {t('screens.library.workoutPresets', {
+                defaultValue: 'Workout presets',
+              })}
             </Text>
-            <Icon name="chevron-forward" size={20} color="#999" />
-          </View>
-        </Pressable>
+            <View className="flex-row items-center">
+              <Text className="text-text-secondary text-base mr-2">
+                {presetsCount ?? '-'}
+              </Text>
+              <Icon name="chevron-forward" size={20} color="#999" />
+            </View>
+          </Pressable>
+        )}
         <Pressable
           className="px-4 py-4 flex-row items-center justify-between border-b border-border-subtle"
           onPress={() => navigation.navigate('Equipment')}

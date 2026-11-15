@@ -66,6 +66,7 @@ import {
   externalItemFromAlternative,
 } from '../utils/exerciseReplace';
 import type { ExerciseAlternative } from '@workspace/shared';
+import { useStrengthExerciseFilter } from '../plus/features/strengthTraining';
 
 type ExerciseSearchScreenProps = RootStackScreenProps<'ExerciseSearch'>;
 
@@ -94,6 +95,7 @@ const ExerciseSearchScreen: React.FC<ExerciseSearchScreenProps> = ({
   const { isConnected } = useServerConnection();
   const { profile } = useProfile();
   const { getImageSource } = useExerciseImageSource();
+  const keepAllowed = useStrengthExerciseFilter();
   const { isNavigationLocked, runNavigationAction } =
     useNavigationActionGuard(navigation);
 
@@ -373,16 +375,31 @@ const ExerciseSearchScreen: React.FC<ExerciseSearchScreenProps> = ({
   );
 
   const filteredRecentExercises = useMemo(
-    () => filterByOwnership(recentExercises, ownershipFilter, profile?.id),
-    [recentExercises, ownershipFilter, profile?.id]
+    () =>
+      filterByOwnership(
+        keepAllowed(recentExercises),
+        ownershipFilter,
+        profile?.id
+      ),
+    [recentExercises, ownershipFilter, profile?.id, keepAllowed]
   );
   const filteredTopExercises = useMemo(
-    () => filterByOwnership(topExercises, ownershipFilter, profile?.id),
-    [topExercises, ownershipFilter, profile?.id]
+    () =>
+      filterByOwnership(
+        keepAllowed(topExercises),
+        ownershipFilter,
+        profile?.id
+      ),
+    [topExercises, ownershipFilter, profile?.id, keepAllowed]
   );
   const filteredSearchResults = useMemo(
-    () => filterByOwnership(searchResults, ownershipFilter, profile?.id),
-    [searchResults, ownershipFilter, profile?.id]
+    () =>
+      filterByOwnership(
+        keepAllowed(searchResults),
+        ownershipFilter,
+        profile?.id
+      ),
+    [searchResults, ownershipFilter, profile?.id, keepAllowed]
   );
 
   const sections = useMemo(() => {

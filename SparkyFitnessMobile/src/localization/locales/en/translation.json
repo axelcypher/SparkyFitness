@@ -10552,5 +10552,17 @@
     "cancelled": "Cancelled tool",
     "error": "Error:",
     "cancelledReason": "Cancelled reason:"
+  },
+  "plus": {
+    "features": {
+      "title": "Features",
+      "loadError": "Could not load your feature choices.",
+      "saveError": "Could not save your feature choice. Please try again.",
+      "footnote": "Turning a feature off only hides it in this app: nothing is deleted, and the website keeps its own settings.",
+      "strengthTraining": {
+        "label": "Strength training",
+        "description": "Live and logged strength workouts, workout presets and plans, plates & bars and strength statistics. Activities, routes and cardio always show."
+      }
+    }
   }
 }

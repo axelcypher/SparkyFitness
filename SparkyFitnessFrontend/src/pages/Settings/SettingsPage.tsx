@@ -48,6 +48,7 @@ import { HeartRateZoneSettings } from './HeartRateZoneSettings';
 import { ProfileInformation } from './ProfileInformation';
 import { DataManagementSettings } from './DataManagementSettings';
 import { DataImportSettings } from './DataImportSettings';
+import { PlusFeaturesSettings } from '@/plus/features/PlusFeaturesSettings';
 
 export interface PasswordFormState {
   current_password: string;
@@ -183,6 +184,12 @@ const Settings = () => {
             </AccordionItem>
             <AccordionItem value="web-tabs" className="border rounded-lg mb-4">
               <WebTabsSettings />
+            </AccordionItem>
+            <AccordionItem
+              value="plus-features"
+              className="border rounded-lg mb-4"
+            >
+              <PlusFeaturesSettings />
             </AccordionItem>
             <AccordionItem
               value="heart-rate-zones"
